@@ -1,0 +1,51 @@
+<section class="p-6">
+  <div class="py-4 text-left">
+    <h1 class="font-semibold text-4xl uppercase">Apžvalga</h1>
+    <h2 class="text-md font-semibold">{{user?.height}}m  {{user?.weight}}kg; {{user?.age}}m</h2>
+  </div>
+  <div class="flex flex-col md:flex-row justify-between items-center cursor-pointer gap-2">
+    <div class="flex gap-2">
+      <div class="py-4">
+        <h1 class="font-semibold uppercase text-2xl text-left">Dienos apžvalga</h1>
+        <h2 class="text-md font-semibold">Dienos tikslas ({{user?.calories}} kcal)</h2>
+        <h2 class="text-md font-semibold">Liko ({{user?.calories - totals.calories  | number}} kcal)</h2>
+        <input
+          type="date"
+          class="text-primary-700"
+          [min]="earliestEntryDate"
+          [max]="currentDate"
+          [value]="dateInput"
+          [(ngModel)]="dateInput"
+          (change)="changeDate(dateInput)">
+      </div>
+      <div class="flex items-center">
+        <button
+          (click)="toggleProducts()"
+          type="button"
+          class="rounded text-black px-3 py-2 border-secondary-200 border-2 hover:bg-primary-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <calorie-app-totals-row [totals]="totals" [size]="'md'"></calorie-app-totals-row>
+  </div>
+  <calorie-app-user-product-list *ngIf="showProducts" [userProducts]="userProducts" (quantityChangeEvent)="quantityChange($event)" (toggleEditModeEvent)="toggleEditMode($event)" (removeItemEvent)="removeItem($event)"></calorie-app-user-product-list>
+  <div class="flex flex-col">
+    <div class="flex flex-col md:flex-row gap-2">
+      <calorie-app-line-chart [chartData]="lineChartData$ | async" [chartOptions]="lineChartOptions$ | async" class="md:w-6/12 sm:w-full"></calorie-app-line-chart>
+      <calorie-app-bar-chart [chartData]="barChartData$ | async" [chartType]="'regular'" class="md:w-6/12 sm:w-full"></calorie-app-bar-chart>
+    </div>
+    <div class="flex flex-col md:flex-row my-4">
+      <div class="flex flex-col md:w-6/12 md:h-3/6">
+        <h1 class="font-semibold text-lg text-center">Kalorijų suvartojimas pagal kategoriją</h1>
+        <calorie-app-polar-area [chartData]="polarChartData$ | async"></calorie-app-polar-area>
+      </div>
+      <div class="flex flex-col md:w-6/12 md:h-3/6">
+        <h1 class="font-semibold text-lg text-center">Rekomenduojamos paros normos</h1>
+        <calorie-app-bar-chart [chartData]="floatingChartData$ | async" [chartType]="'floating'"></calorie-app-bar-chart>
+      </div>
+    </div>
+  </div>
+</section>
